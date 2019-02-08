@@ -8,28 +8,35 @@ defmodule Scenic.Translation do
   def padding(pix, points \\ @viewport) do
     case points do
       @viewport ->
-        x = padding_bottom(pix, elem(points, 0)) - padding_top(pix, 0)
-        y = padding_right(pix, elem(points, 1)) - padding_left(pix, 0)
+        x = padding_bottom_or_right(pix, elem(points, 0)) - padding_top_or_left(pix, 0)
+        y = padding_bottom_or_right(pix, elem(points, 1)) - padding_top_or_left(pix, 0)
 
         {x, y}
 
       points ->
-        x = padding_bottom(pix, elem(points, 0)) - padding_top(pix, elem(points, 0))
-        y = padding_right(pix, elem(points, 1)) - padding_left(pix, elem(points, 1))
+        x =
+          padding_bottom_or_right(pix, elem(points, 0)) -
+            padding_top_or_left(pix, elem(points, 0))
+
+        y =
+          padding_bottom_or_right(pix, elem(points, 1)) -
+            padding_top_or_left(pix, elem(points, 1))
 
         {x, y}
     end
   end
 
-  def padding_top(pix, point) when point == 0, do: pix
-  def padding_top(pix, point), do: point + pix
+  def padding_top(pix, point), do: padding_top_or_left(pix, point)
 
-  def padding_bottom(pix, point) when point == 0, do: pix
-  def padding_bottom(pix, point), do: point - pix
+  def padding_bottom(pix, point), do: padding_bottom_or_right(pix, point)
 
-  def padding_left(pix, point) when point == 0, do: pix
-  def padding_left(pix, point), do: point + pix
+  def padding_left(pix, point), do: padding_top_or_left(pix, point)
 
-  def padding_right(pix, point) when point == 0, do: pix
-  def padding_right(pix, point), do: point - pix
+  def padding_right(pix, point), do: padding_bottom_or_right(pix, point)
+
+  defp padding_top_or_left(pix, point) when point == 0, do: pix
+  defp padding_top_or_left(pix, point), do: point + pix
+
+  defp padding_bottom_or_right(pix, point) when point == 0, do: pix
+  defp padding_bottom_or_right(pix, point), do: point - pix
 end
