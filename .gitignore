@@ -1,5 +1,5 @@
 # The directory Mix will write compiled artifacts to.
-/_build/
+*/_build/
 
 # If you run "mix test --cover", coverage assets end up here.
 /cover/
@@ -26,3 +26,5 @@ foo-*.tar
 # Ignore scripts marked as secret - usually passwords and such in config files
 *.secret.exs
 *.secrets.exs
+
+*.beam
