@@ -1,4 +1,4 @@
-defmodule Scenic.Translation do
+defmodule Scenic.Translation.Padding do
   @viewport :display_o_matic
             |> Application.get_env(:viewport)
             |> Map.get(:size)
