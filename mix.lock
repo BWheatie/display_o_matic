@@ -1,0 +1,6 @@
+%{
+  "dnssd": {:git, "https://github.com/benoitc/dnssd_erlang", "9b2fdb7ff9618102d82f04e4c68ce191c9aa15ba", []},
+  "elixir_make": {:hex, :elixir_make, "0.5.0", "3d65ce6d537d2ce164c0311551a607b90ea7f91d85242a67f3c5e59693c3aa50", [:mix], [], "hexpm"},
+  "scenic": {:hex, :scenic, "0.9.0", "129594f918b4e2dd97465b95b4fb3582294ac6bb3e931f12edd09913743964eb", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "scenic_driver_glfw": {:hex, :scenic_driver_glfw, "0.9.1", "b64d345929007186c6b2ca603aec21b1fdde758d3eb32f8467a236e58ccd6a19", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}, {:scenic, "~> 0.9", [hex: :scenic, repo: "hexpm", optional: false]}], "hexpm"},
+}

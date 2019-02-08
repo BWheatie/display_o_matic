@@ -1,0 +1,10 @@
+{application,display_o_matic,
+             [{applications,[kernel,stdlib,elixir,dnssd,scenic,
+                             scenic_driver_glfw]},
+              {description,"display_o_matic"},
+              {modules,['Elixir.DisplayOMatic',
+                        'Elixir.DisplayOMatic.Scene.Home',
+                        'Elixir.Scenic.Translation']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {mod,{'Elixir.DisplayOMatic',[]}}]}.
