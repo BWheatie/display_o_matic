@@ -27,5 +27,4 @@ foo-*.tar
 *.secret.exs
 *.secrets.exs
 
-
-/.elixir_ls/
+.elixir_ls/
