@@ -28,3 +28,4 @@ foo-*.tar
 *.secrets.exs
 
 *.beam
+

@@ -2,8 +2,6 @@ defmodule Scenic.Translation.Padding do
   @viewport :display_o_matic
             |> Application.get_env(:viewport)
             |> Map.get(:size)
-  # @viewportx elem(@viewport, 0)
-  # @viewporty elem(@viewport, 1)
 
   def padding(pix, points \\ @viewport) do
     case points do
