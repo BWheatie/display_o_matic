@@ -1,15 +1,16 @@
 defmodule Scenic.Translations.Container do
+
   @viewport :display_o_matic
             |> Application.get_env(:viewport)
             |> Map.get(:size)
   # Takes a list of components/primitives, size of the container, options: starting x, y
-  def build_container(_, [], _), do:
+  def build_container(graph, [], _starting_location), do: graph
   def build_container(
         %{
           module: Scenic.Primitive.Rectangle,
-          data: {container_sizex, container_sizey},
+          data: {container_sizex, container_sizey} = container,
           transforms: %{translate: {container_locationx, container_locationy}}
-        } = container,
+        } = graph,
         [%{styles: %{height: component_height, width: component_width}} = hd | rest],
         starting_location \\ nil
       ) do
@@ -29,13 +30,16 @@ defmodule Scenic.Translations.Container do
             case still_in_containery?(starting_location, container_edges, {nil, component_width}) do
               #elem fits in y of container
               true ->
-                y_plus_width = startingy + component_width
-                Map.put(hd, :transform, {startingx, y_plus_width})
-
                 case still_in_containerx?(starting_location, container_edges, {component_height, nil}) do
                   #elem fits in x of container; elem fits in container
                   true ->
-                    build_container(container, rest, Map.get(hd, :transform))
+                    transform = {startingx, startingy + component_width}
+                    Map.put(hd, :transform, transform)
+
+                    build_container(graph, rest, transform))
+                  #shouldnt get here?
+                  false ->
+                    {:error, "Something went wrong"}
                 end
 
               #does not fit in y of container; check if it still fits in x of container
@@ -46,10 +50,10 @@ defmodule Scenic.Translations.Container do
                     case still_in_containery?({nil, startingy + component_width}, container_edges, {nil, component_width}) do
                       #fits new row of container
                       true ->
-                        x_plus_height = startingx + component_width
-                        map_with_x = Map.put(hd, :transform, {x_plus_height, startingy})
+                        transform = {startingx + component_height, startingy}
+                        Map.put(hd, :transform, transform)
 
-                        build_container(container, rest, Map.get(map_with_x, :transform))
+                        build_container(graph, rest, transform)
 
                       #shouldnt get here?
                       _ ->
