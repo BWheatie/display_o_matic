@@ -4,7 +4,7 @@ defmodule Scenic.Translations.Container do
             |> Application.get_env(:viewport)
             |> Map.get(:size)
   # Takes a list of components/primitives, size of the container, options: starting x, y
-  def build_container(graph, [], _starting_location), do: graph
+  def build_container(graph, [], starting_location), do: graph
   def build_container(
         %{
           module: Scenic.Primitive.Rectangle,
@@ -36,7 +36,7 @@ defmodule Scenic.Translations.Container do
                     transform = {startingx, startingy + component_width}
                     Map.put(hd, :transform, transform)
 
-                    build_container(graph, rest, transform))
+                    build_container(graph, rest, transform)
                   #shouldnt get here?
                   false ->
                     {:error, "Something went wrong"}
