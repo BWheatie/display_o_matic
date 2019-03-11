@@ -3,17 +3,18 @@ defmodule DisplayOMatic.Scene.Home do
 
   alias Scenic.Graph
 
-  # import Scenic.Primitives
+  import Scenic.Primitives
   import Scenic.Components
 
-  @graph Graph.build(font: :roboto, theme: :dark)
+  @dns_device_type "_raop._tcp"
+  @graph Graph.build(font: :roboto)
          |> button("Discover Devices",
            id: :discover_button,
            button_font_size: 20,
            theme: :primary,
            width: 300,
            height: 50,
-           t: {300, 0}
+           t: {270, 0}
          )
 
   def init(_, _opts) do
@@ -22,166 +23,85 @@ defmodule DisplayOMatic.Scene.Home do
   end
 
   def filter_event({:click, :discover_button} = event, _, graph) do
-    {:ok, ref} = :dnssd.browse("_raop._tcp")
-    Process.sleep(1)
-    {:ok, results} = :dnssd.results(ref)
-    :ok = :dnssd.stop(ref)
+    results = dns_discovery(@dns_device_type)
 
-    map =
+    devices =
       Enum.map(results, fn result ->
         result
         |> elem(0)
+        |> String.trim("\n")
         |> String.split("@")
         |> List.last()
       end)
 
-    elems = length(map)
-    write_to_graph(graph, map, elems)
+    graph
+    |> Graph.modify(:discover_button, &update_opts(&1, hidden: true))
+    |> write_to_graph(devices)
+    |> push_graph
 
     {:continue, event, graph}
   end
 
-  # def filter_event({:click, "Device:" <> name} = event, _, graph) do
+  defp write_to_graph(graph, devices) do
+    graph =
+      graph
+      |> rect({500, 200}, id: :button_container, translate: {200, 100})
+      |> group(
+        fn g ->
+          Enum.reduce(devices, g, fn device, g ->
+            g
+            |> button(device,
+              id: "Device:" <> device,
+              hidden: true
+            )
+          end)
+        end,
+        width: 100,
+        height: 30,
+        theme: :secondary,
+        id: :button_group
+      )
 
-  # end
+    container =
+      graph
+      |> Scenic.Graph.get(:button_container)
+      |> List.first()
+      |> IO.inspect()
 
-  defp write_to_graph(graph, [], _), do: graph
+    group =
+      graph
+      |> Scenic.Graph.get(:button_group)
+      |> List.first()
+      |> Map.get(:data)
 
-  defp write_to_graph(graph, [device | devices], elems) do
-    offset = elems - length(devices)
+    list_of_ids = Map.get(group, :data)
+    component = Map.get(group, :styles)
 
-    case offset do
-      1 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {200, 200}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
+    translations =
+      Scenic.Translation.Container.put_in_container(
+        %{data: Map.get(container, :data), styles: Map.get(container, :styles)},
+        {component, list_of_ids},
+        {nil, nil}
+      )
 
-      2 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {200, 200 + 50}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
+    Map.each(translations, fn {id, translate} ->
+      graph
+      |> Graph.modify(id, )
+    end)
 
-      3 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {200, 200 + 100}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
+  end
 
-      4 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {200, 200 + 150}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      5 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {200, 200 + 200}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      6 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {300, 200 + 50}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      7 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {300, 200 + 100}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      8 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {300, 200 + 150}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      9 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {300, 200 + 200}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      10 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {300, 200 + 250}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-
-      11 ->
-        graph
-        |> button(device,
-          id: "Device:" <> device,
-          width: 100,
-          height: 30,
-          theme: :secondary,
-          t: {100, 200 + 50}
-        )
-        |> push_graph
-        |> write_to_graph(devices, elems)
-    end
+  defp dns_discovery(device_type) do
+    {:ok, ref} = :dnssd.browse(device_type)
+    Process.sleep(1)
+    {:ok, results} = :dnssd.results(ref)
+    :ok = :dnssd.stop(ref)
+    results
   end
 end
+
+# Graph.modify(container, hd, fn id ->
+#                         update_opts(hd,
+#                           translate:
+#                         )
+#                       end)

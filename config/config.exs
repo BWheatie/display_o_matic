@@ -6,7 +6,7 @@ use Mix.Config
 config :display_o_matic, :viewport, %{
   name: :main_viewport,
   size: {700, 600},
-  default_scene: {DisplayOMatic.Scene.Home, nil},
+  default_scene: {DisplayOMatic.Scene.Layout, nil},
   drivers: [
     %{
       module: Scenic.Driver.Glfw,
